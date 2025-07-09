@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'core/api/api.dart';
 
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized(); 
+  final result = await absences();
+  print(result);
   runApp(const MyApp());
 }
 
