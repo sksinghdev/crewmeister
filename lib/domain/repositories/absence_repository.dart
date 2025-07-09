@@ -7,8 +7,8 @@ abstract class AbsenceRepository {
   Future<Either<Failure, List<Absence>>> getAbsences({
     int page,
     int limit,
-    String? type,
-    DateTimeRange? dateRange,
+    String? typeFilter,  
+    DateTimeRange? dateFilter, 
   });
 
   Future<Either<Failure, int>> getTotalAbsenceCount();
