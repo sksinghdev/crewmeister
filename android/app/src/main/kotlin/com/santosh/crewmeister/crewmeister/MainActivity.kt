@@ -1,4 +1,4 @@
-package com.example.ecommerce_app
+package com.santosh.crewmeister.crewmeister
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
