@@ -38,7 +38,7 @@ class AbsenceModel extends Equatable {
       endDate: DateTime.parse(json['endDate']),
       memberNote: json['memberNote'],
       admitterNote: json['admitterNote'],
-      confirmedAt: json['confirmedAt'],
+      confirmedAt: status,
       rejectedAt: json['rejectedAt'],
       userId: json['userId'],
     );
@@ -52,12 +52,10 @@ class AbsenceModel extends Equatable {
       endDate: endDate,
       memberNote: memberNote,
       admitterNote: admitterNote,
-      status: confirmedAt != null
-          ? "Confirmed"
-          : rejectedAt != null
-              ? "Rejected"
-              : "Requested",
+      status: confirmedAt! ,
       userId: userId,
+      memberName:  '',
+       memberImage:  '',
     );
   }
 
@@ -65,5 +63,6 @@ class AbsenceModel extends Equatable {
   List<Object?> get props => [
         id, type, startDate, endDate,
         memberNote, admitterNote, confirmedAt, rejectedAt, userId,
+        
       ];
 }
