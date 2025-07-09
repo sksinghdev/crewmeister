@@ -9,6 +9,8 @@ class Absence extends Equatable {
   final String? admitterNote;
   final String status;
   final int userId;
+  final String memberName;
+  final String memberImage;
 
   const Absence({
     required this.id,
@@ -19,11 +21,13 @@ class Absence extends Equatable {
     this.admitterNote,
     required this.status,
     required this.userId,
+    required  this.memberName,
+    required this.memberImage,
   });
 
   @override
   List<Object?> get props => [
         id, type, startDate, endDate,
-        memberNote, admitterNote, status, userId,
+        memberNote, admitterNote, status, userId,memberName,memberImage
       ];
 }
