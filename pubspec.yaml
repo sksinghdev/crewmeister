@@ -26,6 +26,8 @@ dependencies:
   flutter_bloc: ^7.3.3
   dartz: ^0.10.1 
   get_it: ^7.2.0
+  shimmer: ^2.0.0
+  intl: ^0.18.1
 
 
 dev_dependencies:
