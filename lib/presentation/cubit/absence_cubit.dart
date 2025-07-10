@@ -3,59 +3,135 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/entities/absence.dart';
-import '../../domain/repositories/absence_repository.dart';
+import '../../domain/usecases/filter_absences.dart';
+import '../../domain/usecases/get_absence_count.dart';
+import '../../domain/usecases/get_absences.dart';
 
 part 'absence_state.dart';
 
 class AbsenceCubit extends Cubit<AbsenceState> {
-  final AbsenceRepository repository;
+  final GetAbsencesUseCase getAbsencesUseCase;
+  final GetAbsenceCountUseCase getAbsenceCountUseCase;
+  final FilterAbsencesUseCase filterAbsencesUseCase;
 
   int _currentPage = 1;
+  final int _limit = 10;
   bool _hasMore = true;
   bool get hasMore => _hasMore;
   List<Absence> _allAbsences = [];
 
-  AbsenceCubit(this.repository) : super(AbsenceInitial());
+  AbsenceCubit({
+    required this.getAbsencesUseCase,
+    required this.getAbsenceCountUseCase,
+    required this.filterAbsencesUseCase,
+  }) : super(AbsenceInitial());
 
-  void loadAbsences({bool refresh = false, String? typeFilter, DateTimeRange? dateFilter}) async {
+  void loadAbsences({
+    bool isRefresh = false,
+    String? typeFilter,
+    DateTimeRange? dateFilter,
+  }) async {
     if (state is AbsenceLoading) return;
 
-    if (refresh) {
+    if (isRefresh) {
       _currentPage = 1;
       _hasMore = true;
       _allAbsences.clear();
     }
 
     emit(AbsenceLoading(absences: _allAbsences, isFirstFetch: _currentPage == 1));
-    print('Loading page $_currentPage, hasMore: $_hasMore');
-  
-  final result = await repository.getAbsences(
-    page: _currentPage,
-    typeFilter: typeFilter,
-    limit: 10,
-    dateFilter: dateFilter,
-  );
 
-  result.fold(
-    (failure) {
-      emit(AbsenceError(failure.message));
-    },
-    (data) {
-      if (data.isEmpty) {
-        _hasMore = false;
-      } else {
-        _currentPage++;
-        _allAbsences.addAll(data);
-      }
+    final result = await getAbsencesUseCase(
+      page: _currentPage,
+      limit: _limit,
+      typeFilter: typeFilter,
+      dateFilter: dateFilter,
+    );
 
-      if (_allAbsences.isEmpty) {
-        emit(AbsenceEmpty());
-      } else {
-        emit(AbsenceLoaded(absences: _allAbsences, hasMore: _hasMore));
-      }
-    },
-  );
+    // result.fold(
+    //   (failure) => emit(AbsenceError(failure.message)),
+    //   (data) {
+    //     _hasMore = data.length >= _limit;
 
+    // if (data.isNotEmpty) {
+    //   _allAbsences.addAll(data);
+    //   _currentPage++;
+    // }
 
+    //     if (_allAbsences.isEmpty) {
+    //       emit(AbsenceEmpty());
+    //     } else {
+    //       emit(AbsenceLoaded(
+    //         absences: _allAbsences,
+    //         hasMore: _hasMore,
+    //         page: _currentPage - 1,
+    //       ));
+    //     }
+    //   },
+    // );
+    result.fold(
+  (failure) => emit(AbsenceError(failure.message)),
+  (pagedResult) {
+    final data = pagedResult.absences;
+    final totalCount = pagedResult.totalCount;
+
+    _hasMore = (_allAbsences.length + data.length) < totalCount;
+
+    if (data.isNotEmpty) {
+      _allAbsences.addAll(data);
+      _currentPage++;
+    }
+
+    if (_allAbsences.isEmpty) {
+      emit(AbsenceEmpty());
+    } else {
+      emit(AbsenceLoaded(
+        absences: _allAbsences,
+        hasMore: _hasMore,
+        page: _currentPage - 1,
+      ));
+    }
+  },
+);
+  }
+
+  void loadMore({
+    String? typeFilter,
+    DateTimeRange? dateFilter,
+  }) {
+    if (_hasMore) {
+      loadAbsences(
+        isRefresh: false,
+        typeFilter: typeFilter,
+        dateFilter: dateFilter,
+      );
+    }
+  }
+
+  void refresh({
+    String? typeFilter,
+    DateTimeRange? dateFilter,
+  }) {
+    loadAbsences(
+      isRefresh: true,
+      typeFilter: typeFilter,
+      dateFilter: dateFilter,
+    );
+  }
+
+  Future<void> getAbsenceCount({
+    String? typeFilter,
+    DateTimeRange? dateFilter,
+  }) async {
+    final result = await getAbsenceCountUseCase(
+      typeFilter: typeFilter,
+      dateFilter: dateFilter,
+    );
+
+    result.fold(
+      (failure) => emit(AbsenceError(failure.message)),
+      (count) => emit(AbsenceCountLoaded(count)),
+    );
   }
 }
+
