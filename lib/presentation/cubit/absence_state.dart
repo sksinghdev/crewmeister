@@ -13,7 +13,10 @@ class AbsenceLoading extends AbsenceState {
   final List<Absence> absences;
   final bool isFirstFetch;
 
-  const AbsenceLoading({required this.absences, required this.isFirstFetch});
+  const AbsenceLoading({
+    required this.absences,
+    this.isFirstFetch = false,
+  });
 
   @override
   List<Object?> get props => [absences, isFirstFetch];
@@ -22,11 +25,16 @@ class AbsenceLoading extends AbsenceState {
 class AbsenceLoaded extends AbsenceState {
   final List<Absence> absences;
   final bool hasMore;
+  final int page;
 
-  const AbsenceLoaded({required this.absences, required this.hasMore});
+  const AbsenceLoaded({
+    required this.absences,
+    required this.hasMore,
+    required this.page,
+  });
 
   @override
-  List<Object?> get props => [absences, hasMore];
+  List<Object?> get props => [absences, hasMore, page];
 }
 
 class AbsenceEmpty extends AbsenceState {}
@@ -38,4 +46,13 @@ class AbsenceError extends AbsenceState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class AbsenceCountLoaded extends AbsenceState {
+  final int count;
+
+  const AbsenceCountLoaded(this.count);
+
+  @override
+  List<Object?> get props => [count];
 }
