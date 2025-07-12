@@ -7,7 +7,6 @@ import 'dart:ui';
 import '../../core/utils/absence_sliver_app_bar.dart';
 import '../../core/utils/filter_dialog.dart';
 import '../cubit/absence_cubit.dart';
-import 'absence_card.dart';
 
 class AbsenceListView extends StatelessWidget {
   AbsenceListView({super.key});
@@ -24,7 +23,7 @@ class AbsenceListView extends StatelessWidget {
         cubit.hasMore &&
         scrollController.position.pixels >=
             scrollController.position.maxScrollExtent - 200 &&
-        !(cubit.state is AbsenceLoading)) {
+        cubit.state is! AbsenceLoading) {
       isFetchingMore.value = true;
 
       Future.delayed(const Duration(seconds: 2), () {
@@ -76,7 +75,24 @@ class AbsenceListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<AbsenceCubit, AbsenceState>(
+      body: BlocListener<AbsenceCubit, AbsenceState>(
+  listener: (context, state) {
+    if (state is AbsenceExporting) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Exporting iCal...')),
+      );
+    } else if (state is AbsenceExportSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('iCal file shared successfully!')),
+      );
+    } else if (state is AbsenceExportFailure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.message)),
+      );
+    }
+  },
+  child: BlocBuilder<AbsenceCubit, AbsenceState>(
+      
         builder: (context, state) {
           if (state is AbsenceLoading && state.isFirstFetch) {
             return _buildShimmerList();
@@ -128,6 +144,11 @@ class AbsenceListView extends StatelessWidget {
                           AbsenceSliverAppBar(
                             totalCount: totalCount,
                             onFilterPressed: () => _showFilterDialog(context),
+                            onExportPressed: () {
+                              context
+                                  .read<AbsenceCubit>()
+                                  .exportAbsencesToICal(absences);
+                            },
                           ),
                           AbsenceSliverList(
                             absences: absences,
@@ -148,11 +169,21 @@ class AbsenceListView extends StatelessWidget {
           return const SizedBox.shrink();
         },
       ),
+)
+
+      
+      
+      
+      
+      
+      
+      
+      ,
     );
   }
 
   Widget _buildShimmerList() {
-    return Center(
+    return const Center(
       child: SpinKitSpinningLines(color: Colors.blue, size: 50),
     );
   }

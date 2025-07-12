@@ -52,9 +52,9 @@ class AbsenceCard extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.25),
+                color: Colors.white.withAlpha(204),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withOpacity(0.2)),
+                border: Border.all(color: Colors.white.withAlpha(51)),
               ),
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -87,7 +87,7 @@ class AbsenceCard extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.15),
+                          color: statusColor.withAlpha(38),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:crewmeister/core/utils/single_emit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-import '../../domain/entities/absence.dart';
+import 'package:share_plus/share_plus.dart';
+ import '../../domain/entities/absence.dart';
 import '../../domain/usecases/filter_absences.dart';
+import '../../domain/usecases/generate_and_share_ical.dart';
 import '../../domain/usecases/get_absence_count.dart';
 import '../../domain/usecases/get_absences.dart';
 
@@ -13,17 +17,19 @@ class AbsenceCubit extends Cubit<AbsenceState> {
   final GetAbsencesUseCase getAbsencesUseCase;
   final GetAbsenceCountUseCase getAbsenceCountUseCase;
   final FilterAbsencesUseCase filterAbsencesUseCase;
+  final GenerateAndShareICal generateICalUseCase;
 
   int _currentPage = 1;
   final int _limit = 10;
   bool _hasMore = true;
   bool get hasMore => _hasMore;
-  List<Absence> _allAbsences = [];
+  final List<Absence> _allAbsences = [];
 
   AbsenceCubit({
     required this.getAbsencesUseCase,
     required this.getAbsenceCountUseCase,
     required this.filterAbsencesUseCase,
+    required this.generateICalUseCase,
   }) : super(AbsenceInitial());
 
   void loadAbsences({
@@ -112,5 +118,20 @@ class AbsenceCubit extends Cubit<AbsenceState> {
       (failure) => emit(AbsenceError(failure.message)),
       (count) => emit(AbsenceCountLoaded(count)),
     );
+  }
+
+   Future<void> exportAbsencesToICal(List<Absence> absences) async {
+   emitSingleTop(AbsenceExporting());
+  try {
+    final File icalFile = await generateICalUseCase(absences);
+        await Share.shareXFiles(
+  [XFile(icalFile.path)],
+  text: 'Absence Calendar',
+  subject: 'Absences',
+);
+    emitSingleTop(AbsenceExportSuccess());
+  } catch (e) {
+    emitSingleTop(const AbsenceExportFailure('Failed to generate iCal file.'));
+  }
   }
 }

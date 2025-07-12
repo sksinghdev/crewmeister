@@ -3,25 +3,31 @@ import 'package:flutter/material.dart';
 class AbsenceSliverAppBar extends StatelessWidget {
   final int totalCount;
   final VoidCallback onFilterPressed;
+  final VoidCallback onExportPressed;
 
   const AbsenceSliverAppBar({
-    Key? key,
+    super.key,
     required this.totalCount,
     required this.onFilterPressed,
-  }) : super(key: key);
+    required this.onExportPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 160,
-      backgroundColor: Colors.white.withOpacity(0.9),
+      backgroundColor: Colors.white.withValues(alpha: 229),
       elevation: 4,
       automaticallyImplyLeading: false,
       actions: [
         IconButton(
           icon: const Icon(Icons.filter_alt, color: Colors.black),
           onPressed: onFilterPressed,
+        ),
+        IconButton(
+          icon: const Icon(Icons.share, color: Colors.black),
+          onPressed: onExportPressed,
         ),
       ],
       flexibleSpace: LayoutBuilder(
@@ -31,7 +37,8 @@ class AbsenceSliverAppBar extends StatelessWidget {
 
           return FlexibleSpaceBar(
             centerTitle: false,
-            titlePadding: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
+            titlePadding:
+                const EdgeInsets.only(left: 16, right: 16, bottom: 12),
             title: isCollapsed
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.start,

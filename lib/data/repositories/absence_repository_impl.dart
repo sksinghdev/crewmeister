@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/api/api.dart';
 import '../../core/error/failure.dart';
+import '../../core/shared/ical/ical_generator.dart';
+import '../../domain/entities/absence.dart';
 import '../../domain/repositories/absence_repository.dart';
 import '../mappers/absence_mapper.dart';
 import '../models/absence_model.dart';
@@ -10,7 +14,8 @@ import '../models/member_model.dart';
 import '../models/paged_absence_result.dart';
 
 class AbsenceRepositoryImpl implements AbsenceRepository {
-  AbsenceRepositoryImpl();
+  final ICalGenerator generator;
+  AbsenceRepositoryImpl(this.generator);
 
   @override
   Future<Either<Failure, PagedAbsenceResult>> getAbsences({
@@ -77,6 +82,11 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
+  }
+
+  @override
+  Future<File> generateICalFile(List<Absence> absences) {
+    return generator.generateICS(absences);
   }
 
   List<dynamic> _getFilteredList(
