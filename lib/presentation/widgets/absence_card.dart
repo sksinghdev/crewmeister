@@ -40,9 +40,9 @@ class AbsenceCard extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFFEBF5FF), // Light blue
-              Color(0xFFE3F2FD), // Soft cyan
-              Color(0xFFF1F8E9), // Light green
+              Color(0xFFEBF5FF),
+              Color(0xFFE3F2FD),
+              Color(0xFFF1F8E9),
             ],
           ),
         ),
@@ -60,7 +60,6 @@ class AbsenceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Avatar, Name, Status
                   Row(
                     children: [
                       CircleAvatar(
@@ -80,12 +79,13 @@ class AbsenceCard extends StatelessWidget {
                           style: GoogleFonts.poppins(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: const Color(0xFF1E1E1E), // 👈 dark for visibility
+                            color: const Color(0xFF1E1E1E),
                           ),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: statusColor.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(20),
@@ -101,25 +101,24 @@ class AbsenceCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 12),
                   buildAbsenceTypeIcon(absence.type),
-
                   const SizedBox(height: 4),
                   Text(
                     "Period: ${formatDateRange(absence.startDate, absence.endDate)}",
                     style: GoogleFonts.poppins(
                       fontSize: 14,
-                      color: const Color(0xFF444444), // 👈 medium gray
+                      color: const Color(0xFF444444),
                     ),
                   ),
-
                   const SizedBox(height: 8),
-                  if (absence.memberNote != null && absence.memberNote!.isNotEmpty)
+                  if (absence.memberNote != null &&
+                      absence.memberNote!.isNotEmpty)
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.note_alt_outlined, size: 18, color: Color(0xFF666666)),
+                        const Icon(Icons.note_alt_outlined,
+                            size: 18, color: Color(0xFF666666)),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -127,18 +126,20 @@ class AbsenceCard extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                               fontStyle: FontStyle.italic,
-                              color: const Color(0xFF666666), // 👈 subtle text
+                              color: const Color(0xFF666666),
                             ),
                           ),
                         ),
                       ],
                     ),
                   const SizedBox(height: 6),
-                  if (absence.admitterNote != null && absence.admitterNote!.isNotEmpty)
+                  if (absence.admitterNote != null &&
+                      absence.admitterNote!.isNotEmpty)
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.comment_bank_outlined, size: 18, color: Color(0xFF666666)),
+                        const Icon(Icons.comment_bank_outlined,
+                            size: 18, color: Color(0xFF666666)),
                         const SizedBox(width: 6),
                         Expanded(
                           child: Text(
@@ -146,7 +147,7 @@ class AbsenceCard extends StatelessWidget {
                             style: GoogleFonts.poppins(
                               fontSize: 13,
                               fontStyle: FontStyle.italic,
-                              color: const Color(0xFF666666), // 👈 subtle text
+                              color: const Color(0xFF666666),
                             ),
                           ),
                         ),
@@ -192,7 +193,7 @@ class AbsenceCard extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontSize: 14,
             fontWeight: FontWeight.w700,
-            color: const Color(0xFF444444), // 👈 label text
+            color: const Color(0xFF444444),
           ),
         ),
       ],
