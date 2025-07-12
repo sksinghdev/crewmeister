@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'core/shared/app_router.dart';
-import 'core/shared/injection_container.dart' as di;
+import 'core/di/injection_container.dart' as di;
 
 final _appRouter = AppRouter();
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized(); 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   _registerDependencies();
   runApp(const MyApp());
 }
+
 Future<void> _registerDependencies() async {
   await di.init();
 }
@@ -16,9 +17,8 @@ Future<void> _registerDependencies() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     try {
       return MaterialApp.router(
         routerConfig: _appRouter.config(),
@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Color(0xFF4E89FF),  
+            primary: Color(0xFF4E89FF),
             onPrimary: Colors.white,
-            secondary: Color(0xFFFF6B6B),  
+            secondary: Color(0xFFFF6B6B),
             onSecondary: Colors.white,
             surface: Colors.white,
             onSurface: Color(0xFF333333),
