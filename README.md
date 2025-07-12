@@ -29,9 +29,18 @@ We decided to implement this feature and are calling it **Absence Manager**.
 ## 🛠️ Tech Stack
 
 - **Flutter Version**: `3.27.1`
-- **Architecture**: Clean Architecture (Data, Domain, Presentation layers)
-
+- **Architecture**: Clean Architecture (Domain → Data → Presentation)
+- **State Management**: `Cubit` with `flutter_bloc`
 ---
+
+
+## 🚀 Getting Started
+
+1. Run `flutter pub get`
+2. Use `flutter run` to build and run the app
+3. To generate routes or mocks, use:
+   ```bash
+   flutter pub run build_runner build --delete-conflicting-outputs
 
 ## 📦 Dependencies
 
