@@ -11,12 +11,12 @@ class AbsenceSliverList extends StatelessWidget {
   final void Function(Absence absence)? onCardPressed;
 
   const AbsenceSliverList({
-    Key? key,
+    super.key,
     required this.absences,
     required this.hasMore,
     required this.isFetchingMore,
     this.onCardPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

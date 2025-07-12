@@ -58,3 +58,15 @@ class AbsenceCountLoaded extends AbsenceState {
   @override
   List<Object?> get props => [count];
 }
+
+class AbsenceExporting extends AbsenceState {}
+
+class AbsenceExportSuccess extends AbsenceState {}
+
+class AbsenceExportFailure extends AbsenceState {
+  final String message;
+  const AbsenceExportFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
