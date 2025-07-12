@@ -4,8 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:crewmeister/core/utils/single_emit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
- import '../../domain/entities/absence.dart';
+import '../../domain/entities/absence.dart';
+import '../../domain/services/share_service.dart';
 import '../../domain/usecases/filter_absences.dart';
 import '../../domain/usecases/generate_and_share_ical.dart';
 import '../../domain/usecases/get_absence_count.dart';
@@ -18,6 +18,7 @@ class AbsenceCubit extends Cubit<AbsenceState> {
   final GetAbsenceCountUseCase getAbsenceCountUseCase;
   final FilterAbsencesUseCase filterAbsencesUseCase;
   final GenerateAndShareICal generateICalUseCase;
+  final ShareService shareService;
 
   int _currentPage = 1;
   final int _limit = 10;
@@ -30,6 +31,7 @@ class AbsenceCubit extends Cubit<AbsenceState> {
     required this.getAbsenceCountUseCase,
     required this.filterAbsencesUseCase,
     required this.generateICalUseCase,
+    required this.shareService,
   }) : super(AbsenceInitial());
 
   void loadAbsences({
@@ -45,8 +47,7 @@ class AbsenceCubit extends Cubit<AbsenceState> {
       _allAbsences.clear();
     }
 
-    emit(AbsenceLoading(
-        absences: _allAbsences, isFirstFetch: _currentPage == 1));
+    emit(AbsenceLoading(absences: [], isFirstFetch: _currentPage == 1));
 
     final result = await getAbsencesUseCase(
       page: _currentPage,
@@ -120,18 +121,20 @@ class AbsenceCubit extends Cubit<AbsenceState> {
     );
   }
 
-   Future<void> exportAbsencesToICal(List<Absence> absences) async {
-   emitSingleTop(AbsenceExporting());
-  try {
-    final File icalFile = await generateICalUseCase(absences);
-        await Share.shareXFiles(
-  [XFile(icalFile.path)],
-  text: 'Absence Calendar',
-  subject: 'Absences',
-);
-    emitSingleTop(AbsenceExportSuccess());
-  } catch (e) {
-    emitSingleTop(const AbsenceExportFailure('Failed to generate iCal file.'));
-  }
+  Future<void> exportAbsencesToICal(List<Absence> absences) async {
+    emitSingleTop(AbsenceExporting());
+    try {
+      final File icalFile = await generateICalUseCase(absences);
+      await shareService.shareFile(
+        icalFile,
+        text: 'Absence Calendar',
+        subject: 'Absences',
+      );
+
+      emitSingleTop(AbsenceExportSuccess());
+    } catch (e) {
+      emitSingleTop(
+          const AbsenceExportFailure('Failed to generate iCal file.'));
+    }
   }
 }
