@@ -32,7 +32,6 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
         typeFilter,
         dateFilter,
       );
-
       final paginated = filtered.skip((page - 1) * limit).take(limit).toList();
       final result2 = paginated.map((a) {
         final member = memberList.firstWhere(
@@ -43,7 +42,8 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
         return AbsenceMapper.toDomain(a, member);
       }).toList();
 
-      return Right(PagedAbsenceResult(absences: result2, totalCount: filtered.length));
+      return Right(
+          PagedAbsenceResult(absences: result2, totalCount: filtered.length));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -63,6 +63,17 @@ class AbsenceRepositoryImpl implements AbsenceRepository {
       );
 
       return Right(filtered.length);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> getTotalAbsenceCountWethoutFilter() async {
+    try {
+      final absenceModelList = await absences();
+
+      return Right(absenceModelList.length);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

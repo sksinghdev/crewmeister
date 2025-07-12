@@ -7,12 +7,14 @@ abstract class AbsenceRepository {
   Future<Either<Failure, PagedAbsenceResult>> getAbsences({
     int page,
     int limit,
-    String? typeFilter,  
-    DateTimeRange? dateFilter, 
+    String? typeFilter,
+    DateTimeRange? dateFilter,
   });
 
   Future<Either<Failure, int>> getTotalAbsenceCount({
-  String? typeFilter,
-  DateTimeRange? dateFilter,
-});
+    String? typeFilter,
+    DateTimeRange? dateFilter,
+  });
+
+  Future<Either<Failure, int>> getTotalAbsenceCountWethoutFilter();
 }

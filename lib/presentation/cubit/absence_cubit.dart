@@ -39,7 +39,8 @@ class AbsenceCubit extends Cubit<AbsenceState> {
       _allAbsences.clear();
     }
 
-    emit(AbsenceLoading(absences: _allAbsences, isFirstFetch: _currentPage == 1));
+    emit(AbsenceLoading(
+        absences: _allAbsences, isFirstFetch: _currentPage == 1));
 
     final result = await getAbsencesUseCase(
       page: _currentPage,
@@ -48,51 +49,30 @@ class AbsenceCubit extends Cubit<AbsenceState> {
       dateFilter: dateFilter,
     );
 
-    // result.fold(
-    //   (failure) => emit(AbsenceError(failure.message)),
-    //   (data) {
-    //     _hasMore = data.length >= _limit;
-
-    // if (data.isNotEmpty) {
-    //   _allAbsences.addAll(data);
-    //   _currentPage++;
-    // }
-
-    //     if (_allAbsences.isEmpty) {
-    //       emit(AbsenceEmpty());
-    //     } else {
-    //       emit(AbsenceLoaded(
-    //         absences: _allAbsences,
-    //         hasMore: _hasMore,
-    //         page: _currentPage - 1,
-    //       ));
-    //     }
-    //   },
-    // );
     result.fold(
-  (failure) => emit(AbsenceError(failure.message)),
-  (pagedResult) {
-    final data = pagedResult.absences;
-    final totalCount = pagedResult.totalCount;
+      (failure) => emit(AbsenceError(failure.message)),
+      (pagedResult) {
+        final data = pagedResult.absences;
+        final totalCount = pagedResult.totalCount;
 
-    _hasMore = (_allAbsences.length + data.length) < totalCount;
+        _hasMore = (_allAbsences.length + data.length) < totalCount;
 
-    if (data.isNotEmpty) {
-      _allAbsences.addAll(data);
-      _currentPage++;
-    }
+        if (data.isNotEmpty) {
+          _allAbsences.addAll(data);
+          _currentPage++;
+        }
 
-    if (_allAbsences.isEmpty) {
-      emit(AbsenceEmpty());
-    } else {
-      emit(AbsenceLoaded(
-        absences: _allAbsences,
-        hasMore: _hasMore,
-        page: _currentPage - 1,
-      ));
-    }
-  },
-);
+        if (_allAbsences.isEmpty) {
+          emit(AbsenceEmpty());
+        } else {
+          emit(AbsenceLoaded(
+              absences: _allAbsences,
+              hasMore: _hasMore,
+              page: _currentPage - 1,
+              totalAbsence: totalCount));
+        }
+      },
+    );
   }
 
   void loadMore({
@@ -134,4 +114,3 @@ class AbsenceCubit extends Cubit<AbsenceState> {
     );
   }
 }
-

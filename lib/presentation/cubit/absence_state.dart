@@ -26,15 +26,17 @@ class AbsenceLoaded extends AbsenceState {
   final List<Absence> absences;
   final bool hasMore;
   final int page;
+  final int totalAbsence;
 
   const AbsenceLoaded({
     required this.absences,
     required this.hasMore,
     required this.page,
+    required this.totalAbsence,
   });
 
   @override
-  List<Object?> get props => [absences, hasMore, page];
+  List<Object?> get props => [absences, hasMore, page, totalAbsence];
 }
 
 class AbsenceEmpty extends AbsenceState {}
